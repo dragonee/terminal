@@ -82,6 +82,7 @@ $(function() {
             this.echo('Press CTRL-D to exit from the service')
 
             var uri = URI(current_endpoint)
+            var terminal = this
 
             this.push(make_endpoint(current_endpoint, {
                 use: function(service) {
@@ -106,7 +107,9 @@ $(function() {
                 }
              }), {
                 name: current_endpoint,
-                prompt: this.login_name() + '@' + uri.hostname() + ' $ ',
+                prompt: function(commandline) {
+                    commandline(terminal.login_name() + '@' + uri.hostname() + ' $ ')
+                },
                 login: function(user, password, callback) {
                     call_rpc(current_endpoint, id++, 'login', [user, password], $.terminal.active(), function(result) {
                         callback(result.token)
